@@ -23,7 +23,12 @@ class table:
         self._rows=r
         self._cols=c
         self._title=title
-        if r.__iter__:
+        if ch:
+            #this is a hacky fix for the time being
+            if len(self._cols)!=len(ch[0]):
+                for i in range(len(ch[0])):
+                    self._cols.append([])
+        if r:
             if len(self._cols)!=len(r[0]):
                 for i in range(len(r[0])):
                     self._cols.append([])
@@ -47,6 +52,9 @@ class table:
         
     def r_fill(self, rows):
         self._rows=rows
+
+    def add_row(self, row):
+        self._rows.append(row)
 
     def c_fill(self, columns):
         self._cols=columns
@@ -106,11 +114,8 @@ def file_out(lines, outpath='./', filename='table.tex', append=False):
     if os.path.exists(outpath+filename) and append:
         tfile = open(outpath+filename, 'a')
     elif os.path.exists(outpath+filename) and not append:
-        import sys
-        print outpath+filename + ' already exists!'
-        sys.exit()
-    else:    
-        tfile = open(outpath+filename, "w")
+        filename = filename.rstrip('.tex') + '_ow_.tex'
+    tfile = open(outpath+filename, "w")
     tfile.writelines(lines)
     tfile.close()
     return
@@ -142,6 +147,7 @@ class texTable(table):
     def texify(self):
 
         self._lines.append('\\begin{table}\n')
+        self._lines.append('\\begin{center}\n')
         if self._caption:
             self._lines.append('\caption{'+self._caption+'}\n')
         s=r'\begin{tabular}{'
@@ -151,16 +157,17 @@ class texTable(table):
         self._lines.append(s +'}\n')
         self._lines.append('\hline\n')
         for ch in self._c_header[:-1]:#column headers
-            self._lines.append(str(ch) + '&')
+            self._lines.append(str(ch) + '  &  ')
         self._lines.append(str(self._c_header[-1]))
         self._lines.append('\\\ \hline\n')
         self._lines.append('\hline\n')
         for r in self._rows:#only deal with rows so far
             for entry in r[:-1]:
-                self._lines.append(str(entry) + '&')
+                self._lines.append(str(entry) + '  &  ')
             self._lines.append(str(r[-1]))
             self._lines.append('\\\ \hline\n')
         self._lines.append('\end{tabular}\n')
+        self._lines.append('\end{center}\n')
         self._lines.append('\end{table}\n')
         return
 

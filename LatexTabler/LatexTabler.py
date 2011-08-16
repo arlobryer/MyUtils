@@ -17,16 +17,33 @@ def tables_maker(t):
 
 
 class table:
-    def __init__(self,rh=[],ch=[],r=[],c=[],title=''):
-        self._r_header=rh
-        self._c_header=ch
-        self._rows=r
-        self._cols=c
-        self._title=title
+    def __init__(self,rh=None,ch=None,r=None,c=None,title=None):
+        #this is how this has to be done. See: http://www.deadlybloodyserious.com/2008/05/default-argument-blunders/
+        #thanks Alex for helping!
+        if rh==None:
+            self._r_header=[]
+        else:
+            self._r_header=rh
+        if ch==None:
+            self._c_header=[]
+        else:
+            self._c_header=ch
+        if r==None:
+            self._rows=[]
+        else:
+            self._rows=r
+        if c==None:
+            self._cols=[]
+        else:
+            self._cols=c
+        if title==None:
+            self._title=[]
+        else:
+            self._title=title
         if ch:
             #this is a hacky fix for the time being
-            if len(self._cols)!=len(ch[0]):
-                for i in range(len(ch[0])):
+            if len(self._cols)!=len(ch):
+                for i in range(len(ch)):
                     self._cols.append([])
         if r:
             if len(self._cols)!=len(r[0]):
@@ -59,31 +76,6 @@ class table:
     def c_fill(self, columns):
         self._cols=columns
         
-    # @classmethod  THIS ALL NEEDS REDOING
-    
-    # def dic_fill(self, dic, name):
-    #     self._r_header=dic[name]['row_headers']
-    #     self._c_header=dic[name]['col_headers']
-    #     if "rows" in dic[name].keys():
-    #         self.r_fill(dic[name]["rows"])
-    #     for i in range (len(dic[name]["rows"][0])):#assume that we have same num cols for all rows ie regular table
-    #         self._cols.append([])
-    #     if "cols" in dic[name].keys():
-    #         self.c_fill(cols)
-    #     return
-
-    # def json_fill(self, t, name):
-    #     import json
-    #     t=json.load(j)
-    #     self._r_header=t[name]['row_headers']
-    #     self._c_header=t[name]['col_headers']
-    #     if "rows" in t[name].keys():
-    #         self.r_fill(t[name]["rows"])
-    #     for i in range (len(t[name]["rows"][0])):#assume that we have same num cols for all rows ie regular table
-    #         self._cols.append([])
-    #     if "cols" in t[name].keys():
-    #         self.c_fill(cols)
-    #     return
     
     def mod_tab_elem(self, x, y):
         if x > self._cols:
